@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import FirebaseAuth
 import FirebaseFirestore
 
 class AdminViewModel: ObservableObject {
@@ -25,8 +26,9 @@ class AdminViewModel: ObservableObject {
     
     
     func fetchStories() {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         isLoading = true
-        db.collection("stories").getDocuments { [weak self] snapshot, error in
+        db.collection("stories").whereField("ownerId", isEqualTo: currentUserId).getDocuments { [weak self] snapshot, error in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 if let error = error {
@@ -42,6 +44,7 @@ class AdminViewModel: ObservableObject {
     
     
     func createStoryDraft(title: String, description: String) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         isLoading = true
         errorMessage = ""
         successMessage = ""
@@ -49,7 +52,8 @@ class AdminViewModel: ObservableObject {
         let storyData: [String: Any] = [
             "title": title,
             "description": description,
-            "nodes": []  // Empty nodes array — nodes added separately
+            "nodes": [],  // Empty nodes array — nodes added separately
+            "ownerId": currentUserId
         ]
         
         db.collection("stories").addDocument(data: storyData) { [weak self] error in

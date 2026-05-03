@@ -13,6 +13,8 @@ struct Story: Codable, Identifiable {
     
     @DocumentID var id: String?
     
+    var ownerId: String?
+    
     var title: String
     
     var description: String
@@ -21,6 +23,7 @@ struct Story: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case id
+        case ownerId
         case title
         case description
         case nodes

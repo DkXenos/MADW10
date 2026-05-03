@@ -101,6 +101,11 @@ class ProfileViewModel: ObservableObject {
     }
     
     private func writeSeedStory(title: String, description: String, nodes: [StoryNode]) {
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            self.seedMessage = "Error: User not logged in"
+            return
+        }
+        
         isLoading = true
         seedMessage = ""
         
@@ -119,7 +124,8 @@ class ProfileViewModel: ObservableObject {
         let storyData: [String: Any] = [
             "title": title,
             "description": description,
-            "nodes": nodesData
+            "nodes": nodesData,
+            "ownerId": currentUserId
         ]
         
         db.collection("stories").addDocument(data: storyData) { [weak self] error in

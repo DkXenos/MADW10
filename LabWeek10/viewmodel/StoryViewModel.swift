@@ -36,9 +36,10 @@ class StoryViewModel: ObservableObject {
     
     
     func fetchStories() {
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         isLoading = true
         
-        db.collection("stories").getDocuments { [weak self] snapshot, error in
+        db.collection("stories").whereField("ownerId", isEqualTo: currentUserId).getDocuments { [weak self] snapshot, error in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 
