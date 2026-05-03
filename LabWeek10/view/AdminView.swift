@@ -19,61 +19,84 @@ struct AdminView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 0) {
-                
-                Text("Rancangan Cerita")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Arsitek")
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundColor(.primary)
+                        
+                        Text("Rancangan Cerita")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
                     .padding(.horizontal)
-                    .padding(.top, 8)
-                
-                if adminVM.isLoading {
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
+                    .padding(.top, 16)
+                    
+                    if adminVM.isLoading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                        .padding(.top, 40)
                     }
-                    .padding(.top, 40)
-                }
-                else if adminVM.stories.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(systemName: "doc.badge.plus")
-                            .font(.system(size: 40))
-                            .foregroundColor(.secondary)
-                        Text("Belum ada cerita.")
-                            .foregroundColor(.secondary)
-                        Text("Tekan + untuk membuat cerita baru.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                    else if adminVM.stories.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "doc.badge.plus")
+                                .font(.system(size: 40))
+                                .foregroundColor(.secondary)
+                            Text("Belum ada cerita.")
+                                .foregroundColor(.secondary)
+                            Text("Tekan + untuk membuat cerita baru.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 60)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 60)
-                }
-                else {
-                    List {
-                        ForEach(adminVM.stories) { story in
-                            NavigationLink(destination: StoryDetailView(
-                                story: story,
-                                adminVM: adminVM
-                            )) {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(story.title)
-                                        .font(.headline)
-                                    Text(story.description)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(2)
+                    else {
+                        VStack(spacing: 0) {
+                            ForEach(adminVM.stories) { story in
+                                NavigationLink(destination: StoryDetailView(
+                                    story: story,
+                                    adminVM: adminVM
+                                )) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(story.title)
+                                                .font(.headline)
+                                                .foregroundColor(.primary)
+                                            Text(story.description)
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                                .lineLimit(2)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding()
                                 }
-                                .padding(.vertical, 4)
+                                
+                                if story.id != adminVM.stories.last?.id {
+                                    Divider().padding(.horizontal)
+                                }
                             }
                         }
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
                     }
-                    .listStyle(.plain)
+                    
+                    Spacer()
                 }
-                
-                Spacer()
             }
-            .navigationTitle("Arsitek")
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {

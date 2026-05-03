@@ -16,99 +16,192 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section(header: Text("Akun")) {
-                    HStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    
+                    // MARK: - Profile Header
+                    VStack(spacing: 8) {
                         Image(systemName: "person.circle.fill")
-                            .font(.title)
+                            .resizable()
+                            .frame(width: 80, height: 80)
+                            .foregroundColor(.black)
+                        
+                        Text(profileVM.userEmail)
+                            .font(.title3)
+                            .bold()
+                        
+                        Text("Pencatat takdir yang bijaksana")
+                            .font(.subheadline)
                             .foregroundColor(.secondary)
-                        VStack(alignment: .leading) {
-                            Text("Email")
+                    }
+                    .padding(.top, 40)
+                    
+                    // MARK: - Achievements Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Achievements")
+                            .font(.headline)
+                            .bold()
+                            .padding(.horizontal)
+                        
+                        VStack {
+                            if profileVM.achievements.isEmpty {
+                                HStack {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.black)
+                                            .frame(width: 40, height: 40)
+                                        Image(systemName: "medal.fill")
+                                            .foregroundColor(.white)
+                                            .font(.system(size: 16))
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Belum ada pencapaian")
+                                            .font(.subheadline)
+                                            .bold()
+                                        Text("Selesaikan cerita untuk mendapatkan.")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                }
+                                .padding()
+                            } else {
+                                ForEach(profileVM.achievements, id: \.self) { achievement in
+                                    HStack {
+                                        ZStack {
+                                            Circle()
+                                                .fill(Color.black)
+                                                .frame(width: 40, height: 40)
+                                            Image(systemName: "medal.fill")
+                                                .foregroundColor(.white)
+                                                .font(.system(size: 16))
+                                        }
+                                        
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(achievement)
+                                                .font(.subheadline)
+                                                .bold()
+                                            Text("Satu cerita selesai.")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        Spacer()
+                                    }
+                                    .padding()
+                                }
+                            }
+                        }
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                    }
+                    
+                    // MARK: - Seed Data Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Seed Data")
+                            .font(.headline)
+                            .bold()
+                            .padding(.horizontal)
+                        
+                        VStack(spacing: 0) {
+                            // Row 1: Bajak Laut
+                            Button(action: { profileVM.seedBajakLaut() }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Bajak laut")
+                                            .font(.subheadline)
+                                            .bold()
+                                            .foregroundColor(.primary)
+                                        Text("Mulai petualangan mencari harta karun samudra.")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "plus")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding()
+                            }
+                            
+                            Divider().padding(.horizontal)
+                            
+                            // Row 2: Ninja
+                            Button(action: { profileVM.seedNinja() }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Ninja")
+                                            .font(.subheadline)
+                                            .bold()
+                                            .foregroundColor(.primary)
+                                        Text("Mulai perjalanan ninja menembus batas desa.")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "plus")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding()
+                            }
+                            
+                            Divider().padding(.horizontal)
+                            
+                            // Row 3: Romance
+                            Button(action: { profileVM.seedRomance() }) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Romance")
+                                            .font(.subheadline)
+                                            .bold()
+                                            .foregroundColor(.primary)
+                                        Text("Mulai kisah asmara manis di bawah sakura.")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "plus")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding()
+                            }
+                        }
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                        
+                        if !profileVM.seedMessage.isEmpty {
+                            Text(profileVM.seedMessage)
                                 .font(.caption)
-                                .foregroundColor(.secondary)
-                            Text(profileVM.userEmail)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                                .foregroundColor(.green)
+                                .padding(.horizontal)
                         }
                     }
-                }
-                
-                Section(header: Text("Achievements")) {
-                    if profileVM.achievements.isEmpty {
-                        Text("Belum ada pencapaian. Selesaikan cerita!")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    } else {
-                        ForEach(profileVM.achievements, id: \.self) { achievement in
-                            HStack {
-                                Image(systemName: "trophy.fill")
-                                    .foregroundColor(.yellow)
-                                Text(achievement)
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                }
-                
-                Section(header: Text("Seed Data")) {
-                    Button(action: {
-                        profileVM.seedBajakLaut()
-                    }) {
-                        HStack {
-                            Image(systemName: "sailboat.fill")
-                            Text("Bajak Laut")
-                            Spacer()
-                            if profileVM.isLoading {
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(profileVM.isLoading)
                     
-                    Button(action: {
-                        profileVM.seedNinja()
-                    }) {
-                        HStack {
-                            Image(systemName: "figure.martial.arts")
-                            Text("Ninja")
-                            Spacer()
-                        }
-                    }
-                    .disabled(profileVM.isLoading)
-                    
-                    Button(action: {
-                        profileVM.seedRomance()
-                    }) {
-                        HStack {
-                            Image(systemName: "heart.fill")
-                            Text("Romance")
-                            Spacer()
-                        }
-                    }
-                    .disabled(profileVM.isLoading)
-                    
-                    if !profileVM.seedMessage.isEmpty {
-                        Text(profileVM.seedMessage)
-                            .font(.caption)
-                            .foregroundColor(.green)
-                    }
-                }
-                
-                Section {
+                    // MARK: - Logout Button
                     Button(action: {
                         authViewModel.signOut()
                     }) {
-                        HStack {
-                            Spacer()
-                            Text("Keluar Akun")
-                                .fontWeight(.semibold)
-                                .foregroundColor(.red)
-                            Spacer()
-                        }
+                        Text("Keluar Akun")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(12)
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    
+                    Spacer(minLength: 40)
                 }
             }
-            .navigationTitle("Profile")
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .navigationBarHidden(true)
             .onAppear {
                 profileVM.fetchProfile()
             }
