@@ -13,6 +13,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Full-screen gameplay view with dark theme, typewriter text, and choices.
 struct GameplayView: View {

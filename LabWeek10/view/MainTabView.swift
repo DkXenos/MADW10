@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Main navigation hub with a bottom tab bar.
 struct MainTabView: View {

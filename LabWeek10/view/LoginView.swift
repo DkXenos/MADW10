@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Login screen with email/password fields and navigation to register.
 struct LoginView: View {

@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import Combine
 
 /// Profile page showing user info, achievements, seed data, and logout.
 struct ProfileView: View {
