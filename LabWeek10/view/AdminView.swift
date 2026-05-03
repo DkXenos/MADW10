@@ -4,25 +4,16 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Admin View (Arsitek)
-//  Main admin page listing all story drafts.
-//  - "+" button opens a sheet to create a new story (title + ringkasan)
-//  - Tapping a story navigates to StoryDetailView to manage its nodes
-//
 
 import SwiftUI
 import Combine
 
-/// Admin page listing all stories with a "+" button to create new drafts.
 struct AdminView: View {
     
-    // MARK: - State
     @StateObject private var adminVM = AdminViewModel()
     
-    /// Controls whether the "Draft Cerita" creation sheet is shown
     @State private var showCreateStorySheet: Bool = false
     
-    /// Form fields for the "Draft Cerita" sheet
     @State private var newStoryTitle: String = ""
     @State private var newStoryDescription: String = ""
     
@@ -30,14 +21,12 @@ struct AdminView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 
-                // MARK: - Subtitle
                 Text("Rancangan Cerita")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.horizontal)
                     .padding(.top, 8)
                 
-                // MARK: - Loading State
                 if adminVM.isLoading {
                     HStack {
                         Spacer()
@@ -46,7 +35,6 @@ struct AdminView: View {
                     }
                     .padding(.top, 40)
                 }
-                // MARK: - Empty State
                 else if adminVM.stories.isEmpty {
                     VStack(spacing: 12) {
                         Image(systemName: "doc.badge.plus")
@@ -61,11 +49,9 @@ struct AdminView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 60)
                 }
-                // MARK: - Story List
                 else {
                     List {
                         ForEach(adminVM.stories) { story in
-                            // Each story is clickable → navigates to StoryDetailView
                             NavigationLink(destination: StoryDetailView(
                                 story: story,
                                 adminVM: adminVM
@@ -89,10 +75,8 @@ struct AdminView: View {
             }
             .navigationTitle("Arsitek")
             .toolbar {
-                // MARK: - "+" Button to Create Story
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // Reset form fields before showing
                         newStoryTitle = ""
                         newStoryDescription = ""
                         showCreateStorySheet = true
@@ -101,7 +85,6 @@ struct AdminView: View {
                     }
                 }
             }
-            // MARK: - "Draft Cerita" Creation Sheet
             .sheet(isPresented: $showCreateStorySheet) {
                 CreateStorySheetView(
                     title: $newStoryTitle,
@@ -122,23 +105,17 @@ struct AdminView: View {
     }
 }
 
-// MARK: - Create Story Sheet View
-/// Sheet popup for creating a new story draft.
-/// Matches the "Draft Cerita" design from the reference screenshots.
-/// Has a title field and a "Ringkasan" (summary) field + "Simpan" button.
 struct CreateStorySheetView: View {
     
     @Binding var title: String
     @Binding var description: String
     @Binding var isPresented: Bool
     
-    /// Callback when the user taps "Simpan"
     var onSave: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             
-            // MARK: - Top Bar with "Simpan" button
             HStack {
                 Spacer()
                 Button("Simpan") {
@@ -155,28 +132,23 @@ struct CreateStorySheetView: View {
             .padding(.top, 16)
             .padding(.trailing, 4)
             
-            // MARK: - "Draft Cerita" Title
             Text("Draft Cerita")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
             
-            // MARK: - "Detail" Section Label
             Text("Detail")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .padding(.horizontal)
             
-            // MARK: - Input Fields Card
             VStack(spacing: 0) {
-                // Title field
                 TextField("Judul cerita", text: $title)
                     .padding()
                 
                 Divider()
                     .padding(.horizontal)
                 
-                // Summary/Ringkasan field
                 TextField("Ringkasan", text: $description)
                     .padding()
             }

@@ -4,22 +4,15 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Register View
-//  Allows new users to create an account with email and password.
-//  On success, navigates back (auth state listener handles routing).
-//
 
 import SwiftUI
 import Combine
 
-/// Registration screen with email/password fields.
 struct RegisterView: View {
     
-    // MARK: - Environment
     @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss
     
-    // MARK: - State
     @State private var email: String = ""
     @State private var password: String = ""
     
@@ -28,18 +21,15 @@ struct RegisterView: View {
             
             Spacer()
             
-            // MARK: - Title
             Text("Register")
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            // MARK: - Subtitle
             Text("Buat akun untuk memulai petualanganmu")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .padding(.bottom, 8)
             
-            // MARK: - Email Field
             VStack(alignment: .leading, spacing: 6) {
                 Text("Email")
                     .font(.caption)
@@ -52,7 +42,6 @@ struct RegisterView: View {
             }
             .padding(.horizontal)
             
-            // MARK: - Password Field
             VStack(alignment: .leading, spacing: 6) {
                 Text("Password")
                     .font(.caption)
@@ -63,7 +52,6 @@ struct RegisterView: View {
             }
             .padding(.horizontal)
             
-            // MARK: - Error Message
             if !authViewModel.errorMessage.isEmpty {
                 Text(authViewModel.errorMessage)
                     .font(.caption)
@@ -72,7 +60,6 @@ struct RegisterView: View {
                     .padding(.horizontal)
             }
             
-            // MARK: - Register Button
             Button(action: {
                 authViewModel.register(email: email, password: password)
             }) {
@@ -93,7 +80,6 @@ struct RegisterView: View {
             .disabled(authViewModel.isLoading)
             .padding(.horizontal)
             
-            // MARK: - Back to Login
             Button(action: {
                 dismiss()
             }) {

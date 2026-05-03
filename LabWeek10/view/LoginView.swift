@@ -4,21 +4,14 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Login View
-//  Presents email and password fields for user authentication.
-//  Includes navigation to RegisterView for new users.
-//
 
 import SwiftUI
 import Combine
 
-/// Login screen with email/password fields and navigation to register.
 struct LoginView: View {
     
-    // MARK: - Environment
     @EnvironmentObject var authViewModel: AuthViewModel
     
-    // MARK: - State
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showRegister: Bool = false
@@ -29,23 +22,19 @@ struct LoginView: View {
                 
                 Spacer()
                 
-                // MARK: - App Icon
                 Image(systemName: "target")
                     .font(.system(size: 48))
                     .foregroundColor(.primary)
                 
-                // MARK: - Title
                 Text("Login")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
-                // MARK: - Subtitle
                 Text("Ceritamu sudah menunggumu di sini")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.bottom, 8)
                 
-                // MARK: - Email Field
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Email")
                         .font(.caption)
@@ -58,7 +47,6 @@ struct LoginView: View {
                 }
                 .padding(.horizontal)
                 
-                // MARK: - Password Field
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Password")
                         .font(.caption)
@@ -69,7 +57,6 @@ struct LoginView: View {
                 }
                 .padding(.horizontal)
                 
-                // MARK: - Error Message
                 if !authViewModel.errorMessage.isEmpty {
                     Text(authViewModel.errorMessage)
                         .font(.caption)
@@ -78,7 +65,6 @@ struct LoginView: View {
                         .padding(.horizontal)
                 }
                 
-                // MARK: - Login Button
                 Button(action: {
                     authViewModel.signIn(email: email, password: password)
                 }) {
@@ -99,7 +85,6 @@ struct LoginView: View {
                 .disabled(authViewModel.isLoading)
                 .padding(.horizontal)
                 
-                // MARK: - Register Navigation
                 Button(action: {
                     showRegister = true
                 }) {

@@ -4,29 +4,21 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Profile ViewModel
-//  Handles user profile data, achievements, and seed data operations.
-//
 
 import Foundation
 import Combine
 import FirebaseAuth
 import FirebaseFirestore
 
-/// ViewModel for profile page: achievements and seed data.
 class ProfileViewModel: ObservableObject {
     
-    // MARK: - Published Properties
     @Published var userEmail: String = ""
     @Published var achievements: [String] = []
     @Published var isLoading: Bool = false
     @Published var seedMessage: String = ""
     
-    // MARK: - Private
     private let db = Firestore.firestore()
     
-    // MARK: - Fetch User Profile
-    /// Loads the current user's email and achievements from Firestore.
     func fetchProfile() {
         guard let user = Auth.auth().currentUser else { return }
         userEmail = user.email ?? "No Email"
@@ -42,8 +34,6 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Seed Data: Bajak Laut
-    /// Writes a complete pirate story tree into Firestore.
     func seedBajakLaut() {
         let nodes: [StoryNode] = [
             StoryNode(nodeId: "bl_1", narrative: "Kapten Arjuna berdiri di dek kapal. Badai mendekat dari barat, tapi harta karun ada di timur. Kru menunggu perintah.", isMainEntryPoint: true, choices: [
@@ -66,8 +56,6 @@ class ProfileViewModel: ObservableObject {
         writeSeedStory(title: "Tekad Sang Kapten", description: "Petualangan bajak laut mencari harta karun di lautan berbahaya.", nodes: nodes)
     }
     
-    // MARK: - Seed Data: Ninja
-    /// Writes a complete ninja story tree into Firestore.
     func seedNinja() {
         let nodes: [StoryNode] = [
             StoryNode(nodeId: "nj_1", narrative: "Ian berlatih di hutan. Ujian ninja tinggal besok pagi. Ian merasa kurang menguasai chakra-nya.", isMainEntryPoint: true, choices: [
@@ -90,8 +78,6 @@ class ProfileViewModel: ObservableObject {
         writeSeedStory(title: "Jalan Ninja", description: "Ian harus memilih jalannya sendiri sebagai ninja desa kebanggaannya.", nodes: nodes)
     }
     
-    // MARK: - Seed Data: Romance
-    /// Writes a complete romance story tree into Firestore.
     func seedRomance() {
         let nodes: [StoryNode] = [
             StoryNode(nodeId: "rm_1", narrative: "Sakura bertemu Daichi di musim semi setelah menangis di taman. Daichi memberikan saputangan biru.", isMainEntryPoint: true, choices: [
@@ -114,8 +100,6 @@ class ProfileViewModel: ObservableObject {
         writeSeedStory(title: "Sakura Terakhir", description: "Kisah cinta Daichi di musim semi setelah menangis di taman.", nodes: nodes)
     }
     
-    // MARK: - Write Seed Story to Firestore
-    /// Helper that encodes nodes and writes a full story to Firestore.
     private func writeSeedStory(title: String, description: String, nodes: [StoryNode]) {
         isLoading = true
         seedMessage = ""

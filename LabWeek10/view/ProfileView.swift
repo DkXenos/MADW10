@@ -4,26 +4,19 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Profile View
-//  Displays user email, achievements, seed data buttons, and logout.
-//
 
 import SwiftUI
 import Combine
 
-/// Profile page showing user info, achievements, seed data, and logout.
 struct ProfileView: View {
     
-    // MARK: - Environment
     @EnvironmentObject var authViewModel: AuthViewModel
     
-    // MARK: - State
     @StateObject private var profileVM = ProfileViewModel()
     
     var body: some View {
         NavigationStack {
             List {
-                // MARK: - User Info Section
                 Section(header: Text("Akun")) {
                     HStack {
                         Image(systemName: "person.circle.fill")
@@ -40,7 +33,6 @@ struct ProfileView: View {
                     }
                 }
                 
-                // MARK: - Achievements Section
                 Section(header: Text("Achievements")) {
                     if profileVM.achievements.isEmpty {
                         Text("Belum ada pencapaian. Selesaikan cerita!")
@@ -58,9 +50,7 @@ struct ProfileView: View {
                     }
                 }
                 
-                // MARK: - Seed Data Section
                 Section(header: Text("Seed Data")) {
-                    // Bajak Laut seed button
                     Button(action: {
                         profileVM.seedBajakLaut()
                     }) {
@@ -75,7 +65,6 @@ struct ProfileView: View {
                     }
                     .disabled(profileVM.isLoading)
                     
-                    // Ninja seed button
                     Button(action: {
                         profileVM.seedNinja()
                     }) {
@@ -87,7 +76,6 @@ struct ProfileView: View {
                     }
                     .disabled(profileVM.isLoading)
                     
-                    // Romance seed button
                     Button(action: {
                         profileVM.seedRomance()
                     }) {
@@ -99,7 +87,6 @@ struct ProfileView: View {
                     }
                     .disabled(profileVM.isLoading)
                     
-                    // Seed status message
                     if !profileVM.seedMessage.isEmpty {
                         Text(profileVM.seedMessage)
                             .font(.caption)
@@ -107,7 +94,6 @@ struct ProfileView: View {
                     }
                 }
                 
-                // MARK: - Logout Section
                 Section {
                     Button(action: {
                         authViewModel.signOut()

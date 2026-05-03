@@ -4,54 +4,34 @@
 //
 //  Created by Jason TIo on 04/05/26.
 //
-//  MARK: - Node Choices View
-//  Page for editing the choices (branches) of a specific story node.
-//  - Shows the node's narrative text at the top
-//  - Lists existing choices with their target node labels
-//  - "Tambah Pilihan" button to add new choices
-//  - Each choice has a label field and a picker to select the target node
-//
 
 import SwiftUI
 import Combine
 
-/// View for adding and editing choices on a story node.
-/// Each choice links to another node in the same story.
 struct NodeChoicesView: View {
     
-    // MARK: - Properties
     
-    /// The parent story (to access all available nodes for targeting)
     let story: Story
     
-    /// The node whose choices are being edited
     let node: StoryNode
     
-    /// Reference to the shared AdminViewModel
     @ObservedObject var adminVM: AdminViewModel
     
-    /// Callback to refresh the parent view after saving
     var onUpdate: () -> Void
     
-    // MARK: - Environment
     @Environment(\.dismiss) var dismiss
     
-    // MARK: - State
     
-    /// Local mutable copy of the node's choices
     @State private var choices: [Choice] = []
     
-    /// Controls whether the "Add Choice" alert/sheet is shown
     @State private var showAddChoice: Bool = false
     
-    /// New choice form fields
     @State private var newChoiceLabel: String = ""
     @State private var newChoiceTargetId: String = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             
-            // MARK: - Node Narrative Preview
             Text(node.narrative)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -59,7 +39,6 @@ struct NodeChoicesView: View {
                 .padding(.horizontal)
                 .padding(.top, 8)
             
-            // MARK: - "Cabang Cerita" Section Label
             Text("Cabang Cerita")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -67,7 +46,6 @@ struct NodeChoicesView: View {
             
             ScrollView {
                 VStack(spacing: 12) {
-                    // MARK: - Existing Choices List
                     if choices.isEmpty {
                         Text("Belum ada pilihan. Node ini adalah ending.")
                             .font(.caption)
@@ -90,7 +68,6 @@ struct NodeChoicesView: View {
                         }
                     }
                     
-                    // MARK: - "Tambah Pilihan" Button
                     Button(action: {
                         newChoiceLabel = ""
                         newChoiceTargetId = ""
@@ -113,7 +90,6 @@ struct NodeChoicesView: View {
                 .padding(.bottom, 20)
             }
             
-            // MARK: - Save Button
             Button(action: saveChoices) {
                 Text("Simpan Pilihan")
                     .fontWeight(.semibold)
@@ -130,10 +106,8 @@ struct NodeChoicesView: View {
         .navigationTitle("Edit Cabang")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            // Load existing choices into local state
             choices = node.choices
         }
-        // MARK: - Add Choice Sheet
         .sheet(isPresented: $showAddChoice) {
             AddChoiceSheetView(
                 availableNodes: availableTargetNodes(),
@@ -146,17 +120,12 @@ struct NodeChoicesView: View {
         }
     }
     
-    // MARK: - Available Target Nodes
     
-    /// Returns all nodes in the story except the current node (can't link to self).
-    /// Used to populate the target node picker.
     private func availableTargetNodes() -> [StoryNode] {
         return story.nodes.filter { $0.nodeId != node.nodeId }
     }
     
-    // MARK: - Save Choices
     
-    /// Saves the updated choices to Firestore via AdminViewModel.
     private func saveChoices() {
         guard let storyId = story.id else { return }
         adminVM.updateNodeChoices(storyId: storyId, nodeId: node.nodeId, choices: choices)
@@ -165,15 +134,12 @@ struct NodeChoicesView: View {
     }
 }
 
-// MARK: - Choice Row View
-/// Displays a single choice with its label and target node info.
 struct ChoiceRowView: View {
     
     let choice: Choice
     let availableNodes: [StoryNode]
     let onDelete: () -> Void
     
-    /// Find the target node's narrative for display
     private var targetNodeLabel: String {
         if let target = availableNodes.first(where: { $0.nodeId == choice.targetNodeId }) {
             return String(target.narrative.prefix(30)) + "..."
@@ -195,7 +161,6 @@ struct ChoiceRowView: View {
                 
                 Spacer()
                 
-                // Delete choice button
                 Button(action: onDelete) {
                     Image(systemName: "trash")
                         .foregroundColor(.red)
@@ -209,8 +174,6 @@ struct ChoiceRowView: View {
     }
 }
 
-// MARK: - Add Choice Sheet View
-/// Sheet for adding a new choice with a label and target node picker.
 struct AddChoiceSheetView: View {
     
     let availableNodes: [StoryNode]
@@ -223,7 +186,6 @@ struct AddChoiceSheetView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             
-            // MARK: - Top Bar
             HStack {
                 Spacer()
                 Button("Simpan") {
@@ -244,13 +206,11 @@ struct AddChoiceSheetView: View {
             .padding(.top, 16)
             .padding(.trailing, 4)
             
-            // MARK: - Title
             Text("Pilihan Baru")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
             
-            // MARK: - Label Field
             VStack(alignment: .leading, spacing: 6) {
                 Text("Label Pilihan")
                     .font(.subheadline)
@@ -262,7 +222,6 @@ struct AddChoiceSheetView: View {
             }
             .padding(.horizontal)
             
-            // MARK: - Target Node Picker
             VStack(alignment: .leading, spacing: 6) {
                 Text("Tujuan Node")
                     .font(.subheadline)
